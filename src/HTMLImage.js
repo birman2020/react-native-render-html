@@ -26,8 +26,8 @@ export default class HTMLImage extends PureComponent {
 
     static defaultProps = {
         imagesInitialDimensions: {
-            width: 100,
-            height: 100
+            width: 355,
+            height: 355
         }
     }
 
