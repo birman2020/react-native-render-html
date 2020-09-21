@@ -7,7 +7,8 @@ export default class HTMLImage extends PureComponent {
         super(props);
         this.state = {
             width: props.imagesInitialDimensions.width,
-            height: props.imagesInitialDimensions.height
+            height: props.imagesInitialDimensions.height,
+            indeterminate: (!props.style || !props.style.width || !props.style.height)
         };
     }
 
@@ -94,7 +95,7 @@ export default class HTMLImage extends PureComponent {
                 }
                 const optimalWidth = imagesMaxWidth <= originalWidth ? imagesMaxWidth : originalWidth;
                 const optimalHeight = (optimalWidth * originalHeight) / originalWidth;
-                this.mounted && this.setState({ width: optimalWidth, height: optimalHeight, error: false });
+                this.mounted && this.setState({ width: optimalWidth, height: optimalHeight, error: false, indeterminate: false });
             },
             () => {
                 this.mounted && this.setState({ error: true });
@@ -120,9 +121,21 @@ export default class HTMLImage extends PureComponent {
         );
     }
 
+    get placeholderImage () {
+      return (
+          <View style={{width: this.props.imagesInitialDimensions.width, height: this.props.imagesInitialDimensions.height}} />
+      );
+    }
+
     render () {
         const { source, style, passProps } = this.props;
-
-        return !this.state.error ? this.validImage(source, style, passProps) : this.errorImage;
+        // return !this.state.error ? this.validImage(source, style, passProps) : this.errorImage;
+      if (this.state.error) {
+          return this.errorImage;
+      } 
+      if (this.state.indeterminate) {
+          return this.placeholderImage;
+      }
+      return this.validImage(source, style, passProps);
     }
 }
